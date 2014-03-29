@@ -70,7 +70,7 @@ while true; do
       repo_name=$(basename "$dir_name" .git)
       cd "$dir_name"
 
-      changes=$(git fetch 2>&1 | grep -F -- '->' | sed 's/^ [+*=!-] //')
+      changes=$(git fetch $(git config dude.fargs) 2>&1 | grep -F -- '->' | sed 's/^ [+*=!-] //')
 
       icon_path=$(git config dude.icon || true)
       icon_path=${icon_path:-`pwd`/icon.png}
