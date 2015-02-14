@@ -80,7 +80,7 @@ while true; do
         cd "$dir_name"
 
         remote=$(git config dude.remote || true)
-        changes=$(git fetch $remote 2>&1 | grep -F -- '->' | sed 's/^ [+*=!-] //')
+        changes=$(git fetch $(git config dude.fargs) $remote 2>&1 | grep -F -- '->' | sed 's/^ [+*=!-] //')
 
         icon_path=$(git config dude.icon || true)
         icon_path=${icon_path:-`pwd`/icon.png}
@@ -120,6 +120,7 @@ while true; do
 
         cd - &>/dev/null
       fi
+<<<<<<< HEAD
     done
   fi
 
