@@ -7,7 +7,10 @@
 #
 # Distributed under the GNU General Public License, version 3.0.
 
-max_jobs=$(git config dude.max-jobs || true)
+dir=$(git config --global dude.default-dir || true)
+dir=${dir:-~/.git-dude}
+
+max_jobs=$(git config --global dude.max-jobs || true)
 max_jobs=${max_jobs:-5}
 
 interval=$(git config dude.interval || true)
@@ -71,7 +74,9 @@ function screensaver() {
     return 0
 }
 
-[[ -d "$1" ]] && cd "$1"
+if [[ -d "$dir" ]];then
+    cd "$dir"
+fi
 
 while true; do
     if ! screensaver; then
