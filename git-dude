@@ -42,15 +42,15 @@ set -e
 export LC_ALL=C # make sure git talks english
 
 if [[ -z "$notify_command" ]]; then
-    if [[ $(which notify-send 2>/dev/null) ]]; then
+    if type -fPp notify-send >/dev/null 2>&1; then
         notify_cmd='notify-send -i "$ICON_PATH" "$TITLE" "$DESCRIPTION"'
-    elif [[ $(which terminal-notifier 2>/dev/null) ]]; then
+    elif type -fPp terminal-notifier >/dev/null 2>&1; then
         notify_cmd='terminal-notifier -title "$TITLE" -message"$DESCRIPTION"'
-    elif [[ $(which growlnotify 2>/dev/null) ]]; then
+    elif type -fPp growlnotify >/dev/null 2>&1; then
         notify_cmd='growlnotify -n "$app_name" --image "$ICON_PATH" -m "$DESCRIPTION" "$TITLE"'
-    elif [[ $(which kdialog 2>/dev/null) ]]; then
+    elif type -fPp kdialog >/dev/null 2>&1; then
         notify_cmd='kdialog --icon $ICON_PATH --title "$TITLE" --passivepopup "$DESCRIPTION"'
-    elif [[ $(which notify 2>/dev/null) ]]; then
+    elif type -fPp notify >/dev/null 2>&1; then
         notify_cmd='notify --type information --icon "$ICON_PATH" --group "Git Commit" --title "$TITLE" "$DESCRIPTION"'
     fi
 fi
@@ -73,10 +73,12 @@ dudenotify() {
 }
 
 if [[ -z "$screensaver_cmd" ]];then
-    if [[ $(which slock 2>/dev/null) ]]; then
+    if type -fPp slock >/dev/null 2>&1; then
         screensaver_cmd='pgrep slock'
-    elif [[ $(which gnome-screensaver-command 2>/dev/null) ]]; then
+    elif type -fPp gnome-gnome-screensaver-command >/dev/null 2>&1; then
         screensaver_cmd='LANG=C gnome-screensaver-command -q | grep -q "is active"'
+    else
+        screensaver_cmd="return 0"
     fi
 fi
 
@@ -87,10 +89,6 @@ screensaver() {
             return 1
         fi
     fi
-
-    # if we cannot be certain, default to saying screensaver is not
-    # active in order to run git-dude on every loop
-    return 0
 }
 
 if [[ -d "$1" ]];then
@@ -98,6 +96,10 @@ if [[ -d "$1" ]];then
 else
     cd "$dir"
 fi
+
+dir="$PWD"
+
+echo "Looking for changes in ${dir}'s repos every $interval/s"
 
 while true; do
     if ! screensaver; then
