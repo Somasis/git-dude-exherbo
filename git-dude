@@ -13,30 +13,32 @@ dir=${dir:-~/.git-dude}
 max_jobs=$(git config --global dude.max-jobs || true)
 max_jobs=${max_jobs:-5}
 
-interval=$(git config dude.interval || true)
-interval=${interval:-60}
-app_name=$(basename $0)
+notify_command=$(git config --global dude.notify-command || true)
 
+interval=$(git config --global dude.interval || true)
+interval=${interval:-60}
+
+app_name=$(basename $0)
 
 set -e
 
 export LC_ALL=C # make sure git talks english
 
-if [[ $(git config dude.notify-command) ]]; then
-    notify_cmd=$(git config dude.notify-command)
-elif [[ $(which notify-send 2>/dev/null) ]]; then
-    notify_cmd='notify-send -i "$ICON_PATH" "$TITLE" "$DESCRIPTION"'
-elif [[ $(which terminal-notifier 2>/dev/null) ]]; then
-    notify_cmd='terminal-notifier -title "$TITLE" -message"$DESCRIPTION"'
-elif [[ $(which growlnotify 2>/dev/null) ]]; then
-    notify_cmd='growlnotify -n "$app_name" --image "$ICON_PATH" -m "$DESCRIPTION" "$TITLE"'
-elif [[ $(which kdialog 2>/dev/null) ]]; then
-    notify_cmd='kdialog --icon $ICON_PATH --title "$TITLE" --passivepopup "$DESCRIPTION"'
-elif [[ $(which notify 2>/dev/null) ]]; then
-    notify_cmd='notify --type information --icon "$ICON_PATH" --group "Git Commit" --title "$TITLE" "$DESCRIPTION"'
+if [[ -z "$notify_command" ]]; then
+    if [[ $(which notify-send 2>/dev/null) ]]; then
+        notify_cmd='notify-send -i "$ICON_PATH" "$TITLE" "$DESCRIPTION"'
+    elif [[ $(which terminal-notifier 2>/dev/null) ]]; then
+        notify_cmd='terminal-notifier -title "$TITLE" -message"$DESCRIPTION"'
+    elif [[ $(which growlnotify 2>/dev/null) ]]; then
+        notify_cmd='growlnotify -n "$app_name" --image "$ICON_PATH" -m "$DESCRIPTION" "$TITLE"'
+    elif [[ $(which kdialog 2>/dev/null) ]]; then
+        notify_cmd='kdialog --icon $ICON_PATH --title "$TITLE" --passivepopup "$DESCRIPTION"'
+    elif [[ $(which notify 2>/dev/null) ]]; then
+        notify_cmd='notify --type information --icon "$ICON_PATH" --group "Git Commit" --title "$TITLE" "$DESCRIPTION"'
+    fi
 fi
 
-function dudenotify() {
+dudenotify() {
     local ICON_PATH="$1"
     local TITLE="$2"
     local DESCRIPTION="$3"
@@ -139,6 +141,6 @@ while true; do
             fi
         done
     fi
-    sleep $interval
+    sleep "$interval"
 done
 
