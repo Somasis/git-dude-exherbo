@@ -55,15 +55,15 @@ dudenotify() {
     echo
 }
 
-if [[ $(git config dude.screensaver-command) ]]; then
-    screensaver_cmd=$(git config dude.screensaver-command)
-elif [[ $(which slock 2>/dev/null) ]]; then
-    screensaver_cmd='pgrep slock'
-elif [[ $(which gnome-screensaver-command 2>/dev/null) ]]; then
-    screensaver_cmd='LANG=C gnome-screensaver-command -q | grep -q "is active"'
+if [[ -z "$screensaver_cmd" ]];then
+    if [[ $(which slock 2>/dev/null) ]]; then
+        screensaver_cmd='pgrep slock'
+    elif [[ $(which gnome-screensaver-command 2>/dev/null) ]]; then
+        screensaver_cmd='LANG=C gnome-screensaver-command -q | grep -q "is active"'
+    fi
 fi
 
-function screensaver() {
+screensaver() {
     if [[ -n "$screensaver_cmd" ]]; then
         eval $screensaver_cmd
         if [[ $? != 0 ]]; then
