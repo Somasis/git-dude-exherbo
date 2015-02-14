@@ -136,7 +136,7 @@ while true; do
                     fi
                 } &
             
-            if [[ "$jobs" -ge $max_jobs ]];then
+            if [[ "$jobs" -ge "$max_jobs" ]];then
                 wait
             fi
         done
