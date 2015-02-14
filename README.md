@@ -44,7 +44,7 @@ On OSX:
 ## Installation
 
 ```bash
-$ curl -skL https://github.com/sickill/git-dude/raw/master/git-dude >~/bin/git-dude
+$ curl -skL https://github.com/Somasis/git-dude/raw/master/git-dude >~/bin/git-dude
 $ chmod +x ~/bin/git-dude
 ```
 
@@ -63,10 +63,10 @@ The homebrew formula lives [here](https://gist.github.com/1289314).
 
 ## Usage
 
-git-dude iterates over repositories that live inside _the dude directory_. This
-directory is nothing more than container for cloned repositories of projects
-you want to watch.  Name it like you want, here for example we use
-_~/.git-dude_:
+git-dude iterates over repositories that live inside the directory set within
+your git config. This directory is nothing more than container for cloned
+repositories of projects you want to watch. Name it like you want, here for
+example we use _~/.git-dude_:
 
 ```bash
 $ mkdir ~/.git-dude
@@ -109,6 +109,12 @@ separate git-dude process.
 ## Configuration
 
 ### Global
+
+Set what directory git-dude should find repositories in by default (default: ~/.git-dude):
+
+```bash
+$ git config --global dude.default-dir ~/git/
+```
 
 Set how often git-dude should check for changes (in seconds, default: 60):
 
