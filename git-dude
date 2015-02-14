@@ -9,6 +9,8 @@
 
 set -e
 
+max_jobs=$(git config dude.max-jobs || true)
+max_jobs=${max_jobs:-5}
 interval=$(git config dude.interval || true)
 interval=${interval:-60}
 app_name=$(basename $0)
@@ -72,7 +74,8 @@ function screensaver() {
 while true; do
   if ! screensaver; then
     for dir_name in *; do
-      if [[ -d "$dir_name" && $(cd "$dir_name"; git rev-parse --git-dir 2>/dev/null) ]]; then
+      jobs=$(jobs | grep ' git' | wc -l)
+      { if [[ -d "$dir_name" && $(cd "$dir_name"; git rev-parse --git-dir 2>/dev/null) ]]; then
 
         if [[ $(cd "$dir_name"; git config dude.ignore) == true ]]; then
           continue
@@ -121,8 +124,10 @@ while true; do
         done <<< "$changes"
 
         cd - &>/dev/null
+      fi; } &
+      if [[ "$jobs" -ge $max_jobs ]];then
+        wait
       fi
-<<<<<<< HEAD
     done
   fi
 
