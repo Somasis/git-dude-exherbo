@@ -1,9 +1,23 @@
 #!/bin/bash
 #
 # git-dude - Git commit notifier
-# https://github.com/sickill/git-dude
+# https://github.com/somasis/git-dude
 #
 # Copyright (C) 2011-2015 Marcin Kulik <http://ku1ik.com/>
+# Copyright (C) 2015 Kylie McClain <somasissounds@gmail.com>
+#
+# Other contributions from:
+#   Alexander von Gluck IV <https://github.com/kallisti5>
+#   Anders Olsson <https://github.com/logaritmisk>
+#   Daniel Heath <https://github.com/DanielHeath>
+#   Eric Jiang <https://github.com/erjiang>
+#   Henrik Holmboe <https://github.com/holmboe>
+#   Josh Dick <https://github.com/joshdick>
+#   Lochlan Bunn <https://github.com/loklaan>
+#   Michael Wolf <https://github.com/maw>
+#   Rogerio Prado de Jesus <https://github.com/rogeriopradoj>
+#   Stefano Ongeri <https://github.com/stelinx>
+#   Łukasz Korecki <https://github.com/lukaszkorecki>
 #
 # Distributed under the GNU General Public License, version 3.0.
 
@@ -76,7 +90,9 @@ screensaver() {
     return 0
 }
 
-if [[ -d "$dir" ]];then
+if [[ -d "$1" ]];then
+    cd "$1"
+else
     cd "$dir"
 fi
 
@@ -135,7 +151,7 @@ while true; do
                         cd - &>/dev/null
                     fi
                 } &
-            
+
             if [[ "$jobs" -ge "$max_jobs" ]];then
                 wait
             fi
