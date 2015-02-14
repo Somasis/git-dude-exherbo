@@ -107,7 +107,7 @@ while true; do
                                     commit_range=$(echo "$line" | awk '{ print $1 }')
                                     branch_name=$(echo "$line" | awk '{ print $2 }')
                                     commit_messages=$(git log $commit_range --pretty=format:'%s (%an)')
-                                    notify_message="New commits in $repo_name/$branch_name"
+                                    notify_message="New commits: $repo_name/$branch_name"
                                     if [[ -n "$remote" ]]; then
                                             notify_message="${notify_message} at $remote"
                                     fi
@@ -115,7 +115,7 @@ while true; do
                                     ;;
                                 *new\ branch*)
                                     branch_name=$(echo "$line" | awk '{ print $3 }')
-                                    notify_message="New branch $repo_name/$branch_name"
+                                    notify_message="New branch: $repo_name/$branch_name"
                                     if [[ -n "$remote" ]]; then
                                             notify_message="${notify_message} at $remote"
                                     fi
@@ -123,7 +123,7 @@ while true; do
                                     ;;
                                 *new\ tag*)
                                     tag_name=$(echo "$line" | awk '{ print $3 }')
-                                    notify_message="New tag $repo_name/$tag_name"
+                                    notify_message="New tag: $repo_name/$tag_name"
                                     if [[ -n "$remote" ]]; then
                                             notify_message="${notify_message} at $remote"
                                     fi
