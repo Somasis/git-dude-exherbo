@@ -20,6 +20,9 @@
 #   Łukasz Korecki <https://github.com/lukaszkorecki>
 #
 # Distributed under the GNU General Public License, version 3.0.
+#
+
+set -o errexit
 
 dir=$(git config --global dude.default-dir || true)
 dir=${dir:-~/.git-dude}
