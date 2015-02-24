@@ -75,7 +75,7 @@ dudenotify() {
 if [[ -z "$screensaver_cmd" ]];then
     if type -fPp slock >/dev/null 2>&1; then
         screensaver_cmd='pgrep slock'
-    elif type -fPp gnome-gnome-screensaver-command >/dev/null 2>&1; then
+    elif type -fPp gnome-screensaver-command >/dev/null 2>&1; then
         screensaver_cmd='LANG=C gnome-screensaver-command -q | grep -q "is active"'
     else
         screensaver_cmd="return 0"
