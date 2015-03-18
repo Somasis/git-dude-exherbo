@@ -28,12 +28,9 @@ dir=$(git config --global dude.default-dir || true)
 dir=${dir:-~/.git-dude}
 
 max_jobs=$(git config --global dude.max-jobs || true)
-max_jobs=${max_jobs:-5}
+max_jobs=${max_jobs:-10}
 
 notify_command=$(git config --global dude.notify-command || true)
-
-interval=$(git config --global dude.interval || true)
-interval=${interval:-60}
 
 app_name=$(basename $0)
 
@@ -41,54 +38,58 @@ set -e
 
 export LC_ALL=C # make sure git talks english
 
-if [[ -z "$notify_command" ]]; then
-    if type -fPp notify-send >/dev/null 2>&1; then
-        notify_cmd='notify-send -i "$ICON_PATH" "$TITLE" "$DESCRIPTION"'
-    elif type -fPp terminal-notifier >/dev/null 2>&1; then
-        notify_cmd='terminal-notifier -title "$TITLE" -message"$DESCRIPTION"'
-    elif type -fPp growlnotify >/dev/null 2>&1; then
-        notify_cmd='growlnotify -n "$app_name" --image "$ICON_PATH" -m "$DESCRIPTION" "$TITLE"'
-    elif type -fPp kdialog >/dev/null 2>&1; then
-        notify_cmd='kdialog --icon $ICON_PATH --title "$TITLE" --passivepopup "$DESCRIPTION"'
-    elif type -fPp notify >/dev/null 2>&1; then
-        notify_cmd='notify --type information --icon "$ICON_PATH" --group "Git Commit" --title "$TITLE" "$DESCRIPTION"'
-    fi
-fi
+normal=$'\u000F'
+bold=$'\u0002'
+underline=$'\u001F'
+green=$'\u0003'"03"
+purple=$'\u0003'"06"
+orange=$'\u0003'"07"
+pink=$'\u0003'"13"
 
-dudenotify() {
-    local ICON_PATH="$1"
-    local TITLE="$2"
-    local DESCRIPTION="$3"
-
-    if [[ -n "$notify_cmd" ]]; then
-        eval $notify_cmd
-    fi
-
-    date "+%x %X"
-    echo "$TITLE"
-    if [[ -n "$DESCRIPTION" ]]; then
-        echo "$DESCRIPTION"
-    fi
-    echo
+set_category() {
+    echo "unofficial"
 }
 
-if [[ -z "$screensaver_cmd" ]];then
-    if type -fPp slock >/dev/null 2>&1; then
-        screensaver_cmd='pgrep slock'
-    elif type -fPp gnome-screensaver-command >/dev/null 2>&1; then
-        screensaver_cmd='LANG=C gnome-screensaver-command -q | grep -q "is active"'
-    else
-        screensaver_cmd="return 0"
-    fi
-fi
+interval() {
+    #interval=$(git config --global dude.interval || true)
+    interval=$(echo {20..60} | tr ' ' '\n' | shuf | head -1)
+}
 
-screensaver() {
-    if [[ -n "$screensaver_cmd" ]]; then
-        eval $screensaver_cmd
-        if [[ $? != 0 ]]; then
-            return 1
-        fi
-    fi
+dudenotify() {
+    local TITLE="$repo_name/$branch"
+    local TYPE="$1"
+    local DESC="$@"
+    echo "${bold}$TITLE${normal}: $ACTION - $@"
+    sleep 2s
+}
+
+get_url() {
+    type="$1"
+    hash="$3"
+    case "$2" in
+        *git.exherbo.org*)
+            echo " - $2/commit/?id=$hash"
+            ;;
+        *gitlab.com*)
+            echo " - $2/commit/$hash"
+            ;;
+        *gitorious.org*)
+            echo " - $2/commit/$hash"
+            ;;
+        *github.com*)
+            local get_url=$(echo "$2" | sed 's/\.git//')
+            echo " - $get_url/commit/$hash"
+            ;;
+    esac
+}
+
+say() {
+    said=true
+    local msg="$@"
+    local length=$(echo "$msg" | wc -c)
+    [[ "$length" -gt 394 ]] && local msg=$(echo "$msg" | cut -c-394)
+    echo "$msg"
+    sleep 1s
 }
 
 if [[ -d "$1" ]];then
@@ -97,9 +98,11 @@ else
     cd "$dir"
 fi
 
-dir="$PWD"
+screensaver() { false; }
 
-echo "Looking for changes in ${dir}'s repos every $interval/s"
+#say "started at $(date +'%X %x')."
+
+dir="$PWD"
 
 while true; do
     if ! screensaver; then
@@ -115,40 +118,26 @@ while true; do
                         cd "$dir_name"
 
                         remote=$(git config dude.remote || true)
+                        #echo "Checking \"$repo_name\"..." >&2
                         changes=$(git fetch $(git config dude.fargs) $remote 2>&1 | grep -F -- '->' | sed 's/^ [+*=!-] //')
-
-                        icon_path=$(git config dude.icon || true)
-                        icon_path=${icon_path:-`pwd`/icon.png}
-                        icon_path=${icon_path// /\\ } # escape spaces before eval
-                        eval icon_path=$icon_path # to expand ~
+                        url=$(git config --get remote.origin.url)
+                        category=$(set_category)
 
                         while read -r line; do
                             case $line in
                                 *..*)
                                     commit_range=$(echo "$line" | awk '{ print $1 }')
                                     branch_name=$(echo "$line" | awk '{ print $2 }')
-                                    commit_messages=$(git log $commit_range --pretty=format:'%s (%an)')
-                                    notify_message="New commits: $repo_name/$branch_name"
-                                    if [[ -n "$remote" ]]; then
-                                            notify_message="${notify_message} at $remote"
-                                    fi
-                                    dudenotify $icon_path "$notify_message" "$commit_messages"
-                                    ;;
-                                *new\ branch*)
-                                    branch_name=$(echo "$line" | awk '{ print $3 }')
-                                    notify_message="New branch: $repo_name/$branch_name"
-                                    if [[ -n "$remote" ]]; then
-                                            notify_message="${notify_message} at $remote"
-                                    fi
-                                    dudenotify $icon_path "$notify_message" ""
-                                    ;;
-                                *new\ tag*)
-                                    tag_name=$(echo "$line" | awk '{ print $3 }')
-                                    notify_message="New tag: $repo_name/$tag_name"
-                                    if [[ -n "$remote" ]]; then
-                                            notify_message="${notify_message} at $remote"
-                                    fi
-                                    dudenotify $icon_path "$notify_message" ""
+                                    commit_messages=$(git log $commit_range --pretty=format:"${category}|${repo_name}:${branch_name}|%h|%aE|%s" | tac)
+                                    echo "$commit_messages" |
+                                        while read commit_line;do
+                                            category=$(echo "$commit_line" | cut -d'|' -f1)
+                                            location=$(echo "$commit_line" | cut -d'|' -f2)
+                                            hash=$(echo "$commit_line" | cut -d'|' -f3)
+                                            author=$(echo "$commit_line" | cut -d'|' -f4 | cut -d'@' -f1)
+                                            commit=$(echo "$commit_line" | cut -d'|' -f5-)
+                                            say "${bold}${category}${normal}: ${purple}${author}${normal} ${repo_name}:${pink}${branch_name}${normal} $hash - $commit$(get_url commit $url $hash)"
+                                        done
                                     ;;
                             esac
                         done <<< "$changes"
@@ -162,6 +151,7 @@ while true; do
             fi
         done
     fi
+    interval
     sleep "$interval"
 done
 
