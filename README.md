@@ -1,3 +1,5 @@
+# git-dude-exherbo
+
 This is a heavily modified version of git-dude which I have no intent of merging with
 my main fork of it. I am using this as a git commit bot for #exherbo, to use for the
 unofficial repositories.
