@@ -1,7 +1,7 @@
 #!/bin/bash
 #
-# git-dude - Git commit notifier
-# https://github.com/somasis/git-dude
+# git-dude-exherbo - Git commit notifier used in #exherbo
+# https://github.com/somasis/git-dude-exherbo
 #
 # Copyright (C) 2011-2015 Marcin Kulik <http://ku1ik.com/>
 # Copyright (C) 2015 Kylie McClain <somasissounds@gmail.com>
