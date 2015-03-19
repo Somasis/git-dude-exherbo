@@ -52,7 +52,7 @@ set_category() {
 
 interval() {
     #interval=$(git config --global dude.interval || true)
-    interval=$(echo {20..60} | tr ' ' '\n' | shuf | head -1)
+    interval=$(echo {30..120} | tr ' ' '\n' | shuf | head -1)
 }
 
 dudenotify() {
