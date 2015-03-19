@@ -127,8 +127,9 @@ while true; do
                                 *..*)
                                     commit_range=$(echo "$line" | awk '{ print $1 }')
                                     branch_name=$(echo "$line" | awk '{ print $2 }')
-                                    commit_messages=$(git log $commit_range --pretty=format:"${category}|${repo_name}:${branch_name}|%h|%aE|%s" | tac)
-                                    echo "$commit_messages" |
+                                    OLDIFS="$IFS"
+                                    IFS=$'\n'
+                                    git log $commit_range --pretty=format:"${category}|${repo_name}:${branch_name}|%h|%aE|%s" | tac | \
                                         while read commit_line;do
                                             category=$(echo "$commit_line" | cut -d'|' -f1)
                                             location=$(echo "$commit_line" | cut -d'|' -f2)
@@ -137,6 +138,7 @@ while true; do
                                             commit=$(echo "$commit_line" | cut -d'|' -f5-)
                                             say "${bold}${category}${normal}: ${purple}${author}${normal} ${repo_name}:${pink}${branch_name}${normal} $hash - $commit$(get_url commit $url $hash)"
                                         done
+                                    IFS="$OLDIFS"
                                     ;;
                             esac
                         done <<< "$changes"
@@ -151,6 +153,7 @@ while true; do
         done
     fi
     interval
+    echo "checking again in $interval seconds..." >&2
     sleep "$interval"
 done
 
