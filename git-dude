@@ -84,12 +84,11 @@ get_url() {
 }
 
 say() {
-    said=true
     local msg="$@"
     local length=$(echo "$msg" | wc -c)
     [[ "$length" -gt 394 ]] && local msg=$(echo "$msg" | cut -c-394)
-    echo "$msg"
     sleep 1s
+    echo "$msg"
 }
 
 if [[ -d "$1" ]];then
