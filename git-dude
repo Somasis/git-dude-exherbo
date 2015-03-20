@@ -128,7 +128,7 @@ while true; do
                                     branch_name=$(echo "$line" | awk '{ print $2 }')
                                     OLDIFS="$IFS"
                                     IFS=$'\n'
-                                    git log $commit_range --pretty=format:"${category}|${repo_name}:${branch_name}|%h|%aE|%s" | sed '1!G;h;$!d' | \
+                                    { git log $commit_range --pretty=format:"${category}|${repo_name}:${branch_name}|%h|%aE|%s" | sed '1!G;h;$!d'; echo; } | \
                                         while read commit_line;do
                                             category=$(echo "$commit_line" | cut -d'|' -f1)
                                             location=$(echo "$commit_line" | cut -d'|' -f2)
