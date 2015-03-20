@@ -117,7 +117,6 @@ while true; do
                         cd "$dir_name"
 
                         remote=$(git config dude.remote || true)
-                        #echo "Checking \"$repo_name\"..." >&2
                         changes=$(git fetch $(git config dude.fargs) $remote 2>&1 | grep -F -- '->' | sed 's/^ [+*=!-] //')
                         url=$(git config --get remote.origin.url)
                         category=$(set_category)
@@ -153,7 +152,6 @@ while true; do
         done
     fi
     interval
-    echo "checking again in $interval seconds..." >&2
     sleep "$interval"
 done
 
