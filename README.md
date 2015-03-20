@@ -7,6 +7,13 @@ unofficial repositories.
 It isn't really intended for public consumption, but it's GPL and might be of use to
 someone else, so here it is.
 
+## Usage
+(this is still being written)
+
+1. Get a directory of the repositories you need monitored going
+2. Pipe in `ii`; ex. `git-dude | tee -a ~/irc/irc.freenode.net/#exherbo{,-bots}/in`
+
+
 ## Author
 - Marcin Kulik (http://ku1ik.com/ | @sickill) (the original repository)
 - Kylie McClain (https://somasis.com) (this fork's maintainer)
