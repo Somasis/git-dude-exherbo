@@ -52,7 +52,6 @@ set_category() {
 
 interval() {
     interval=60
-    interval=$(git config --global dude.interval || echo $interval)
 }
 
 dudenotify() {
