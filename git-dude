@@ -116,12 +116,13 @@ while true; do
                         cd "$dir_name"
 
                         remote=$(git config dude.remote || true)
-                        changes=$(git fetch $(git config dude.fargs) $remote 2>&1 | grep -F -- '->' | sed 's/^ [+*=!-] //')
+                        changes=$(git fetch -v $(git config dude.fargs) $remote 2>&1 | grep -F -- '->' | sed 's/^ [+*=!-] //')
                         url=$(git config --get remote.origin.url)
                         category=$(set_category)
 
                         while read -r line; do
-                            case $line in
+                            #printf "%s:\t%s\n" "$repo_name" "$line" >&2
+                            case "$line" in
                                 *..*)
                                     commit_range=$(echo "$line" | awk '{ print $1 }')
                                     branch_name=$(echo "$line" | awk '{ print $2 }')
