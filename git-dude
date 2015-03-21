@@ -116,7 +116,7 @@ while true; do
                         cd "$dir_name"
 
                         remote=$(git config dude.remote || true)
-                        changes=$(git fetch -v $(git config dude.fargs) $remote 2>&1 | grep -F -- '->' | sed 's/^ [+*=!-] //')
+                        changes=$(yes '' | git fetch -v $(git config dude.fargs) $remote 2>&1 | grep -F -- '->' | sed 's/^ [+*=!-] //')
                         url=$(git config --get remote.origin.url)
                         category=$(set_category)
 
