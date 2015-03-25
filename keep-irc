@@ -3,7 +3,7 @@
 
 network='irc.freenode.net'
 nick='zebraparrot'
-full_name='commit notification and general-purpose bot [Somasis]'
+full_name='commit notifications and etc. bot [Somasis]'
 channels="#exherbo #exherbo-bots #zebraparrot #kremlin"
 irc_dir="$HOME/irc"
 # commands to run on connection start. nickserv and stuff, for example
@@ -15,6 +15,7 @@ ii_args="-e 6697"
 while true; do
     ii -s "$network" -n "$nick" -f "$full_name" -i "$irc_dir" $ii_args &
     iipid="$!"
+    printf 'running ii... %s\n' "$iipid"
     sleep 5
     printf "/j %s\n" $channels > "${irc_dir}/${network}/in"
     . "$cmds"
