@@ -1,0 +1,22 @@
+#!/bin/bash
+# keep irc connection running
+
+network='irc.freenode.net'
+nick='zebraparrot'
+full_name='commit notification and general-purpose bot [Somasis]'
+channels="#exherbo #exherbo-bots #zebraparrot #kremlin"
+irc_dir="$HOME/irc"
+# commands to run on connection start. nickserv and stuff, for example
+cmds="$irc_dir/cmds"
+
+# connect to $network with SSL port 6697. requires ssl patch
+ii_args="-e 6697"
+
+while true; do
+    ii -s "$network" -n "$nick" -f "$full_name" -i "$irc_dir" $ii_args &
+    iipid="$!"
+    sleep 5
+    printf "/j %s\n" $channels > "${irc_dir}/${network}/in"
+    . "$cmds"
+    wait "$iipid"
+done
