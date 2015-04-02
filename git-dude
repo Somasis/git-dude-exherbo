@@ -64,24 +64,37 @@ dudenotify() {
     sleep 2s
 }
 
-get_url() {
+get_url() { # get_url <type> <remote> <hash/branch name>
     type="$1"
-    hash="$3"
-    case "$2" in
-        *git.exherbo.org*)
-            echo " - $2/commit/?id=$hash"
-            ;;
-        *gitlab.com*)
-            echo " - $2/commit/$hash"
-            ;;
-        *gitorious.org*)
-            echo " - $2/commit/$hash"
-            ;;
-        *github.com*)
-            local get_url=$(echo "$2" | sed 's/\.git//')
-            echo " - $get_url/commit/$hash"
-            ;;
-    esac
+    if [[ "$type" == "commit" ]];then
+        case "$2" in
+            *git.exherbo.org*)
+                echo " - $2/commit/?id=$3"
+                ;;
+            *gitlab.com*)
+                local get_url=$(echo "$2" | sed 's/\.git//')
+                echo " - $2/commit/$3"
+                ;;
+            *github.com*)
+                local get_url=$(echo "$2" | sed 's/\.git//')
+                echo " - $get_url/commit/$3"
+                ;;
+        esac
+    elif [[ "$type" == "branch" ]];then
+        case "$2" in
+            *git.exherbo.org*)
+                echo " - $2/log/?h=$3"
+                ;;
+            *gitlab.com*)
+                local get_url=$(echo "$2" | sed 's/\.git//')
+                echo " - $get_url/commits/$3"
+                ;;
+            *github.com*)
+                local get_url=$(echo "$2" | sed 's/\.git//')
+                echo " - $get_url/commits/$3"
+                ;;
+        esac
+    fi
 }
 
 say() {
@@ -140,6 +153,10 @@ while true; do
                                             say "${bold}${category}${normal}: ${purple}${author}${normal} ${repo_name}:${lightblue}${branch_name}${normal} $hash - $commit$(get_url commit $url $hash)"
                                         done
                                     IFS="$OLDIFS"
+                                    ;;
+                                *new\ branch*)
+                                    branch_name=$(echo "$line" | awk '{ print $3 }')
+                                    say "${bold}${category}${normal}: ${repo_name}:${lightblue}${branch_name}${normal} - new branch created$(get_url branch $url)"
                                     ;;
                             esac
                         done <<< "$changes"
