@@ -156,7 +156,7 @@ while true; do
                                     ;;
                                 *new\ branch*)
                                     branch_name=$(echo "$line" | awk '{ print $3 }')
-                                    say "${bold}${category}${normal}: ${repo_name}:${lightblue}${branch_name}${normal} - new branch created$(get_url branch $url)"
+                                    say "${bold}${category}${normal}: ${repo_name}:${lightblue}${branch_name}${normal} - new branch created$(get_url branch $url $branch_name)"
                                     ;;
                             esac
                         done <<< "$changes"
