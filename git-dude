@@ -101,7 +101,7 @@ say() {
     local msg="$@"
     local length=$(echo "$msg" | wc -c)
     [[ "$length" -gt 394 ]] && local msg=$(echo "$msg" | cut -c-394)
-    sleep 1s
+    sleep 3s
     echo "$msg"
 }
 
