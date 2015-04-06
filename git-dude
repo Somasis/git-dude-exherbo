@@ -175,6 +175,7 @@ while true; do
                                 *new\ tag*)
                                     tag_name=$(echo "$line" | awk '{ print $3 }')
                                     say "${bold}${category}${normal}: ${repo_name}:${lightblue}${tag_name}${normal} - new tag created$(get_url tag $url $tag_name)"
+                                    ;;
                             esac
                         done <<< "$changes"
 
