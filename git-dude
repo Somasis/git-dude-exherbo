@@ -94,6 +94,20 @@ get_url() { # get_url <type> <remote> <hash/branch name>
                 echo " - $get_url/commits/$3"
                 ;;
         esac
+    elif [[ "$type" == "tag" ]];then
+        case "$2" in
+            *git.exherbo.org*)
+                echo " - $2/tag/?id=$3"
+                ;;
+            *gitlab.com*)
+                local get_url=$(echo "$2" | sed 's/\.git//')
+                echo " - $get_url/commits/$3"
+                ;;
+            *github.com*)
+                local get_url=$(echo "$2" | sed 's/\.git//')
+                echo " - $get_url/commits/$3"
+                ;;
+        esac
     fi
 }
 
@@ -158,6 +172,9 @@ while true; do
                                     branch_name=$(echo "$line" | awk '{ print $3 }')
                                     say "${bold}${category}${normal}: ${repo_name}:${lightblue}${branch_name}${normal} - new branch created$(get_url branch $url $branch_name)"
                                     ;;
+                                *new\ tag*)
+                                    tag_name=$(echo "$line" | awk '{ print $3 }')
+                                    say "${bold}${category}${normal}: ${repo_name}:${lightblue}${tag_name}${normal} - new tag created$(get_url tag $url $tag_name)"
                             esac
                         done <<< "$changes"
 
