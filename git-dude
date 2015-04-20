@@ -64,6 +64,20 @@ dudenotify() {
     sleep 2s
 }
 
+gitio() { # shorten a github url with git.io; gitio <urls>
+    local url
+    for url in $@;do
+        curl --silent -i https://git.io -F "url=$1" | grep Location: | cut -d' ' -f2-
+    done
+}
+
+tinyurl() { # shorten any url with tinyurl.com; tinyurl <urls>
+    local url
+    for url in $@;do
+        curl --silent "http://tinyurl.com/api-create.php?url=$url"
+    done
+}
+
 get_url() { # get_url <type> <remote> <hash/branch name>
     type="$1"
     if [[ "$type" == "commit" ]];then
