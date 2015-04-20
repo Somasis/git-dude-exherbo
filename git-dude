@@ -83,45 +83,43 @@ get_url() { # get_url <type> <remote> <hash/branch name>
     if [[ "$type" == "commit" ]];then
         case "$2" in
             *git.exherbo.org*)
-                echo " - $2/commit/?id=$3"
+                local url=$(tinyurl "$2/commit/?id=$3")
                 ;;
             *gitlab.com*)
-                local get_url=$(echo "$2" | sed 's/\.git//')
-                echo " - $2/commit/$3"
+                local url=$(tinyurl $(echo "$2" | sed 's/\.git//;s#/$##')"/commit/$3")
                 ;;
             *github.com*)
-                local get_url=$(echo "$2" | sed 's/\.git//')
-                echo " - $get_url/commit/$3"
+                local url=$(gitio $(echo "$2" | sed 's/\.git//;s#/$##')"/commit/$3")
                 ;;
         esac
     elif [[ "$type" == "branch" ]];then
         case "$2" in
             *git.exherbo.org*)
-                echo " - $2/log/?h=$3"
+                local url=$(tinyurl "$2/log/?h=$3")
                 ;;
             *gitlab.com*)
-                local get_url=$(echo "$2" | sed 's/\.git//')
-                echo " - $get_url/commits/$3"
+                local url=$(tinyurl $(echo "$2" | sed 's/\.git//;s#/$##')"/commits/$3")
                 ;;
             *github.com*)
-                local get_url=$(echo "$2" | sed 's/\.git//')
-                echo " - $get_url/commits/$3"
+                local url=$(gitio $(echo "$2" | sed 's/\.git//;s#/$##')"/commits/$3")
                 ;;
         esac
     elif [[ "$type" == "tag" ]];then
         case "$2" in
             *git.exherbo.org*)
-                echo " - $2/tag/?id=$3"
+                local url=$(tinyurl "$2/tag/?id=$3")
                 ;;
             *gitlab.com*)
-                local get_url=$(echo "$2" | sed 's/\.git//')
-                echo " - $get_url/commits/$3"
+                local url=$(tinyurl $(echo "$2" | sed 's/\.git//;s#/$##')"/commits/$3")
                 ;;
             *github.com*)
-                local get_url=$(echo "$2" | sed 's/\.git//')
-                echo " - $get_url/commits/$3"
+                local url=$(gitio $(echo "$2" | sed 's/\.git//;s#/$##')"/commits/$3")
                 ;;
         esac
+    fi
+
+    if [[ ! -z "$url" ]];then
+        echo " - $url"
     fi
 }
 
