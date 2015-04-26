@@ -37,6 +37,7 @@ app_name=$(basename $0)
 set -e
 
 export LC_ALL=C # make sure git talks english
+export GIT_ASKPASS=true # make sure git doesn't prompt for a password
 
 normal=$'\u000F'
 bold=$'\u0002'
@@ -157,7 +158,7 @@ while true; do
                         cd "$dir_name"
 
                         remote=$(git config dude.remote || true)
-                        changes=$(yes '' | git fetch -v $(git config dude.fargs) $remote 2>&1 | grep -F -- '->' | sed 's/^ [+*=!-] //')
+                        changes=$(git fetch -v $(git config dude.fargs) $remote 2>&1 | grep -F -- '->' | sed 's/^ [+*=!-] //')
                         url=$(git config --get remote.origin.url)
                         category=$(set_category)
 
