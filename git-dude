@@ -44,6 +44,7 @@ bold=$'\u0002'
 underline=$'\u001F'
 blue=$'\u0003'"02"
 green=$'\u0003'"03"
+brown=$'\u0003'"05"
 purple=$'\u0003'"06"
 orange=$'\u0003'"07"
 lightblue=$'\u0003'"12"
@@ -120,7 +121,7 @@ get_url() { # get_url <type> <remote> <hash/branch name>
     fi
 
     if [[ ! -z "$url" ]];then
-        echo " - $url"
+        echo " - ${brown}${url}"
     fi
 }
 
