@@ -50,10 +50,6 @@ orange=$'\u0003'"07"
 lightblue=$'\u0003'"12"
 pink=$'\u0003'"13"
 
-set_category() {
-    echo "unofficial"
-}
-
 interval() {
     interval=60
 }
@@ -161,7 +157,6 @@ while true; do
                         remote=$(git config dude.remote || true)
                         changes=$(git fetch -v $(git config dude.fargs) $remote 2>&1 | grep -F -- '->' | sed 's/^ [+*=!-] //')
                         url=$(git config --get remote.origin.url)
-                        category=$(set_category)
 
                         while read -r line; do
                             #printf "%s:\t%s\n" "$repo_name" "$line" >&2
@@ -171,24 +166,23 @@ while true; do
                                     branch_name=$(echo "$line" | awk '{ print $2 }')
                                     OLDIFS="$IFS"
                                     IFS=$'\n'
-                                    { git log $commit_range --pretty=format:"${category}|${repo_name}:${branch_name}|%h|%aE|%s" | sed '1!G;h;$!d'; echo; } | grep -Ev '^[[:space:]]*$' | \
+                                    { git log $commit_range --pretty=format:"${repo_name}:${branch_name}|%h|%aE|%s" | sed '1!G;h;$!d'; echo; } | grep -Ev '^[[:space:]]*$' | \
                                         while read commit_line;do
-                                            category=$(echo "$commit_line" | cut -d'|' -f1)
-                                            location=$(echo "$commit_line" | cut -d'|' -f2)
-                                            hash=$(echo "$commit_line" | cut -d'|' -f3)
-                                            author=$(echo "$commit_line" | cut -d'|' -f4 | cut -d'@' -f1)
-                                            commit=$(echo "$commit_line" | cut -d'|' -f5-)
-                                            say "${bold}${category}${normal}: ${purple}${author}${normal} ${repo_name}:${lightblue}${branch_name}${normal} $hash - $commit$(get_url commit $url $hash)"
+                                            location=$(echo "$commit_line" | cut -d'|' -f1)
+                                            hash=$(echo "$commit_line" | cut -d'|' -f2)
+                                            author=$(echo "$commit_line" | cut -d'|' -f3 | cut -d'@' -f1)
+                                            commit=$(echo "$commit_line" | cut -d'|' -f4-)
+                                            say "${purple}${author}${normal} ${repo_name}:${lightblue}${branch_name}${normal} $hash - $commit$(get_url commit $url $hash)"
                                         done
                                     IFS="$OLDIFS"
                                     ;;
                                 *new\ branch*)
                                     branch_name=$(echo "$line" | awk '{ print $3 }')
-                                    say "${bold}${category}${normal}: ${repo_name}:${lightblue}${branch_name}${normal} - new branch created$(get_url branch $url $branch_name)"
+                                    say "${repo_name}:${lightblue}${branch_name}${normal} - new branch created$(get_url branch $url $branch_name)"
                                     ;;
                                 *new\ tag*)
                                     tag_name=$(echo "$line" | awk '{ print $3 }')
-                                    say "${bold}${category}${normal}: ${repo_name}:${lightblue}${tag_name}${normal} - new tag created$(get_url tag $url $tag_name)"
+                                    say "${repo_name}:${lightblue}${tag_name}${normal} - new tag created$(get_url tag $url $tag_name)"
                                     ;;
                             esac
                         done <<< "$changes"
