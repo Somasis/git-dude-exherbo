@@ -62,6 +62,21 @@ dudenotify() {
     sleep 2s
 }
 
+category() {
+    case "$1" in
+        clang-compat-utils|git-dude-exherbo|test)
+            echo somasis
+        ;;
+        sardemf77)
+            echo dev
+        ;;
+        *)
+            echo unofficial
+        ;;
+    esac
+}
+
+
 gitio() { # shorten a github url with git.io; gitio <urls>
     local url
     for url in $@;do
@@ -157,6 +172,7 @@ while true; do
                         remote=$(git config dude.remote || true)
                         changes=$(git fetch -v $(git config dude.fargs) $remote 2>&1 | grep -F -- '->' | sed 's/^ [+*=!-] //')
                         url=$(git config --get remote.origin.url)
+                        category=$(category "${dir_name##*/}")
 
                         while read -r line; do
                             #printf "%s:\t%s\n" "$repo_name" "$line" >&2
@@ -174,7 +190,7 @@ while true; do
                                             commit=$(echo "$commit_line" | cut -d'|' -f4-)
                                             files=$(git diff-tree -r --name-only "$hash" | tr '\n' ' ' | cut -d' ' -f2- | sed 's/ $//')
                                             [[ -z "$files" ]] && files="no files modified"
-                                            say "${purple}${author}${normal} ${repo_name}:${lightblue}${branch_name}${normal} * ${bold}${hash}${normal} / ${bold}${files}${normal}: ${commit}$(get_url commit $url $hash)"
+                                            say "${green}${author}${normal} unofficial:${repo_name}:${orange}${branch_name}${normal} * ${bold}${hash}${normal} / ${bold}${files}${normal}: ${commit}$(get_url commit $url $hash)"
                                         done
                                     IFS="$OLDIFS"
                                     ;;
