@@ -65,13 +65,13 @@ dudenotify() {
 category() {
     case "$1" in
         clang-compat-utils|git-dude-exherbo|test)
-            echo somasis
+            echo ::somasis
         ;;
         sardemf77)
-            echo dev
+            echo ::dev
         ;;
         *)
-            echo unofficial
+            echo ::unofficial
         ;;
     esac
 }
@@ -190,17 +190,17 @@ while true; do
                                             commit=$(echo "$commit_line" | cut -d'|' -f4-)
                                             files=$(git diff-tree -r --name-only "$hash" | tr '\n' ' ' | cut -d' ' -f2- | sed 's/ $//')
                                             [[ -z "$files" ]] && files="no files modified"
-                                            say "${green}${author}${normal} unofficial:${repo_name}:${orange}${branch_name}${normal} * ${bold}${hash}${normal} / ${bold}${files}${normal}: ${commit}$(get_url commit $url $hash)"
+                                            say "${green}${author}${normal} ${repo_name}${category}:${orange}${branch_name}${normal} * ${bold}${hash}${normal} / ${bold}${files}${normal}: ${commit}$(get_url commit $url $hash)"
                                         done
                                     IFS="$OLDIFS"
                                     ;;
                                 *new\ branch*)
                                     branch_name=$(echo "$line" | awk '{ print $3 }')
-                                    say "${repo_name}:${lightblue}${branch_name}${normal}: new branch created$(get_url branch $url $branch_name)"
+                                    say "${repo_name}${category}:${lightblue}${branch_name}${normal}: new branch created$(get_url branch $url $branch_name)"
                                     ;;
                                 *new\ tag*)
                                     tag_name=$(echo "$line" | awk '{ print $3 }')
-                                    say "${repo_name}:${lightblue}${tag_name}${normal}: new tag created$(get_url tag $url $tag_name)"
+                                    say "${repo_name}${category}:${lightblue}${tag_name}${normal}: new tag created$(get_url tag $url $tag_name)"
                                     ;;
                             esac
                         done <<< "$changes"
