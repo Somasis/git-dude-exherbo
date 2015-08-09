@@ -2,8 +2,7 @@
 # synchronize repos to get the unofficial ones automatically
 # set this on a cronjob
 
-PALUDIS_LOG_DIRECTORY=$HOME/.paludis-monitor
-CAVE="cave -E :monitor"
-export PALUDIS_LOG_DIRECTORY
+export PALUDIS_LOG_DIRECTORY="$HOME"/.paludis-monitor
+export CAVE="cave -E :monitor"
 
 $CAVE sync
