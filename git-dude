@@ -190,7 +190,7 @@ while true; do
                                             commit=$(echo "$commit_line" | cut -d'|' -f4-)
                                             files=$(git diff-tree -r --name-only "$hash" | tr '\n' ' ' | cut -d' ' -f2- | sed 's/ $//')
                                             [[ -z "$files" ]] && files="no files modified"
-                                            say "${green}${author}${normal} ${repo_name}${category}:${orange}${branch_name}${normal} * ${bold}${hash}${normal} / ${bold}${files}${normal}: ${commit}$(get_url commit $url $hash)"
+                                            say "${blue}${author}${normal} ${repo_name}${category}:${orange}${branch_name}${normal} * ${bold}${hash}${normal} / ${bold}${files}${normal}: ${commit}$(get_url commit $url $hash)"
                                         done
                                     IFS="$OLDIFS"
                                     ;;
