@@ -95,6 +95,9 @@ get_url() { # get_url <type> <remote> <hash/branch name>
     type="$1"
     if [[ "$type" == "commit" ]];then
         case "$2" in
+            *bitbucket.org*)
+                local url=$(tinyurl "$2/commits/$3")
+                ;;
             *git.exherbo.org*)
                 local url=$(tinyurl "$2/commit/?id=$3")
                 ;;
@@ -107,6 +110,9 @@ get_url() { # get_url <type> <remote> <hash/branch name>
         esac
     elif [[ "$type" == "branch" ]];then
         case "$2" in
+            *bitbucket.org*)
+                local url=$(tinyurl "$2/branch/$3")
+                ;;
             *git.exherbo.org*)
                 local url=$(tinyurl "$2/log/?h=$3")
                 ;;
@@ -119,6 +125,9 @@ get_url() { # get_url <type> <remote> <hash/branch name>
         esac
     elif [[ "$type" == "tag" ]];then
         case "$2" in
+            *bitbucket.org*)
+                local url=$(tinyurl "$2/commits/tag/$3")
+                ;;
             *git.exherbo.org*)
                 local url=$(tinyurl "$2/tag/?id=$3")
                 ;;
