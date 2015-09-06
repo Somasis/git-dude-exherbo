@@ -175,8 +175,9 @@ while true; do
                             continue
                         fi
 
-                        repo_name=$(basename "$dir_name" .git)
                         cd "$dir_name"
+                        repo_name=$(basename "$dir_name" .git)
+                        [[ -f "./profiles/repo_name" ]] && repo_name=$(echo $(<./profiles/repo_name))
 
                         remote=$(git config dude.remote || true)
                         changes=$(git fetch -v $(git config dude.fargs) $remote 2>&1 | grep -F -- '->' | sed 's/^ [+*=!-] //')
