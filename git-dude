@@ -67,7 +67,7 @@ category() {
         clang-compat-utils|git-dude-exherbo|test)
             echo somasis
         ;;
-        sardemf77)
+        sardemff7)
             echo dev
         ;;
         *)
