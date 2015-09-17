@@ -5,4 +5,7 @@
 export PALUDIS_LOG_DIRECTORY="$HOME"/.paludis-monitor
 export CAVE="cave -E :monitor"
 
+cd "$HOME"/git/infra-scripts
+git reset --hard HEAD; git pull -vf
 $CAVE sync
+
