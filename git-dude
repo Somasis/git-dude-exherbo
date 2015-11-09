@@ -153,20 +153,12 @@ say() {
     echo "$msg"
 }
 
-if [[ -d "$1" ]];then
-    cd "$1"
-else
-    cd "$dir"
-fi
-
-screensaver() { false; }
-
 #say "started at $(date +'%X %x')."
 
-dir="$PWD"
-
+# main loop
 while true; do
-    if ! screensaver; then
+    for d in $@;do
+        cd "${d}"
         for dir_name in *; do
             jobs=$(jobs | grep ' git' | wc -l)
                 {
@@ -175,14 +167,15 @@ while true; do
                             continue
                         fi
 
-                        cd "$dir_name"
-                        repo_name=$(basename "$dir_name" .git)
-                        [[ -f "./profiles/repo_name" ]] && repo_name=$(echo $(<./profiles/repo_name))
+                        dir="${PWD}/${dir_name}"
+                        repo_name=$(basename "$dir" .git)
+                        [[ -f "./profiles/repo_name" ]] && repo_name=$(echo $(<"${dir}"/profiles/repo_name))
 
-                        remote=$(git config dude.remote || true)
-                        changes=$(git fetch -v $(git config dude.fargs) $remote 2>&1 | grep -F -- '->' | sed 's/^ [+*=!-] //')
-                        url=$(git config --get remote.origin.url)
-                        category=$(category "${dir_name##*/}")
+                        remote=$(git -C "${dir}" config dude.remote || true)
+                        changes=$(git -C "${dir}" fetch -v $(git config dude.fargs) ${remote} 2>&1 | grep -F -- '->' | sed 's/^ [+*=!-] //')
+                        url=$(git -C "${dir}" config --get remote.origin.url)
+                        category=$(category "${PWD}/${dir_name}")
+
 
                         while read -r line; do
                             #printf "%s:\t%s\n" "$repo_name" "$line" >&2
@@ -192,7 +185,7 @@ while true; do
                                     branch_name=$(echo "$line" | awk '{ print $2 }')
                                     OLDIFS="$IFS"
                                     IFS=$'\n'
-                                    { git log $commit_range --pretty=format:"${repo_name}:${branch_name}|%h|%aE|%s" | sed '1!G;h;$!d'; echo; } | grep -Ev '^[[:space:]]*$' | \
+                                    { git -C "${dir}" log $commit_range --pretty=format:"${repo_name}:${branch_name}|%h|%aE|%s" | sed '1!G;h;$!d'; echo; } | grep -Ev '^[[:space:]]*$' | \
                                         while read commit_line;do
                                             location=$(echo "$commit_line" | cut -d'|' -f1)
                                             hash=$(echo "$commit_line" | cut -d'|' -f2)
