@@ -192,7 +192,7 @@ while true; do
                                             hash=$(echo "$commit_line" | cut -d'|' -f2)
                                             author=$(echo "$commit_line" | cut -d'|' -f3 | cut -d'@' -f1)
                                             commit=$(echo "$commit_line" | cut -d'|' -f4-)
-                                            files=$(git diff-tree -r --name-only "$hash" | tr '\n' ' ' | cut -d' ' -f2- | sed 's/ $//')
+                                            files=$(git -C "${dir}" diff-tree -r --name-only "$hash" | tr '\n' ' ' | cut -d' ' -f2- | sed 's/ $//')
                                             [[ -z "$files" ]] && files="no files modified"
                                             say "${purple}${author}${normal} ${category:+$category/}${repo_name}:${orange}${branch_name}${normal} * ${bold}${hash}${normal} / ${bold}${files}${normal}: ${commit}$(get_url commit $url $hash)"
                                         done
