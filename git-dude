@@ -63,11 +63,11 @@ dudenotify() {
 }
 
 category() {
-    case "$1" in
-        clang-compat-utils|git-dude-exherbo|test)
-            echo somasis
+    case "${1}" in
+        */custom/*)
+            git -C "${1}" config dude.category 2>/dev/null || echo custom
         ;;
-        sardemff7)
+        */sardemff7)
             echo dev
         ;;
         *)
@@ -93,6 +93,7 @@ tinyurl() { # shorten any url with tinyurl.com; tinyurl <urls>
 
 get_url() { # get_url <type> <remote> <hash/branch name>
     type="$1"
+    [[ "$2" == '/'* ]] && return 0
     if [[ "$type" == "commit" ]];then
         case "$2" in
             *bitbucket.org*)
@@ -193,17 +194,17 @@ while true; do
                                             commit=$(echo "$commit_line" | cut -d'|' -f4-)
                                             files=$(git diff-tree -r --name-only "$hash" | tr '\n' ' ' | cut -d' ' -f2- | sed 's/ $//')
                                             [[ -z "$files" ]] && files="no files modified"
-                                            say "${purple}${author}${normal} ${repo_name}:${orange}${branch_name}${normal} * ${bold}${hash}${normal} / ${bold}${files}${normal}: ${commit}$(get_url commit $url $hash)"
+                                            say "${purple}${author}${normal} ${category:+$category/}${repo_name}:${orange}${branch_name}${normal} * ${bold}${hash}${normal} / ${bold}${files}${normal}: ${commit}$(get_url commit $url $hash)"
                                         done
                                     IFS="$OLDIFS"
                                     ;;
                                 *new\ branch*)
                                     branch_name=$(echo "$line" | awk '{ print $3 }')
-                                    say "${repo_name}${category}:${lightblue}${branch_name}${normal}: new branch created$(get_url branch $url $branch_name)"
+                                    say "${category:+$category/}${repo_name}:${lightblue}${branch_name}${normal}: new branch created$(get_url branch $url $branch_name)"
                                     ;;
                                 *new\ tag*)
                                     tag_name=$(echo "$line" | awk '{ print $3 }')
-                                    say "${repo_name}${category}:${lightblue}${tag_name}${normal}: new tag created$(get_url tag $url $tag_name)"
+                                    say "${category:+$category/}${repo_name}:${lightblue}${tag_name}${normal}: new tag created$(get_url tag $url $tag_name)"
                                     ;;
                             esac
                         done <<< "$changes"
