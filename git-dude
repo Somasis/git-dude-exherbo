@@ -28,7 +28,7 @@ dir=$(git config --global dude.default-dir || true)
 dir=${dir:-~/.git-dude}
 
 max_jobs=$(git config --global dude.max-jobs || true)
-max_jobs=${max_jobs:-10}
+max_jobs=${max_jobs:-2}
 
 notify_command=$(git config --global dude.notify-command || true)
 
@@ -51,7 +51,7 @@ lightblue=$'\u0003'"12"
 pink=$'\u0003'"13"
 
 interval() {
-    interval=60
+    echo 60
 }
 
 dudenotify() {
@@ -223,8 +223,7 @@ while true; do
                 wait
             fi
         done
-    fi
-    interval
-    sleep "$interval"
+    done
+    sleep "$(interval)"
 done
 

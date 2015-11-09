@@ -5,6 +5,7 @@ network='irc.freenode.net'
 nick='zebraparrot'
 full_name='commit notifications and etc. bot [Somasis]'
 channels="#exherbo #exherbo-bots #zebraparrot"
+#channels='#zebraparrot'
 irc_dir="$HOME/.paludis-monitor/irc"
 # commands to run on connection start. nickserv and stuff, for example
 cmds="$irc_dir/cmds"
