@@ -84,10 +84,10 @@ gitio() { # shorten a github url with git.io; gitio <urls>
     done
 }
 
-tinyurl() { # shorten any url with tinyurl.com; tinyurl <urls>
+isgd() { # shorten any url with is.gd; isgd <urls>
     local url
     for url in $@;do
-        curl --silent "http://tinyurl.com/api-create.php?url=$url"
+        curl --silent "https://is.gd/create.php?format=simple&url=$url"
     done
 }
 
@@ -97,13 +97,13 @@ get_url() { # get_url <type> <remote> <hash/branch name>
     if [[ "$type" == "commit" ]];then
         case "$2" in
             *bitbucket.org*)
-                local url=$(tinyurl "$2/commits/$3")
+                local url=$(isgd "$2/commits/$3")
                 ;;
             *git.exherbo.org*)
-                local url=$(tinyurl "$2/commit/?id=$3")
+                local url=$(isgd "$2/commit/?id=$3")
                 ;;
             *gitlab.com*)
-                local url=$(tinyurl $(echo "$2" | sed 's/\.git//;s#/$##')"/commit/$3")
+                local url=$(isgd $(echo "$2" | sed 's/\.git//;s#/$##')"/commit/$3")
                 ;;
             *github.com*)
                 local url=$(gitio $(echo "$2" | sed 's/\.git//;s#/$##')"/commit/$3")
@@ -112,13 +112,13 @@ get_url() { # get_url <type> <remote> <hash/branch name>
     elif [[ "$type" == "branch" ]];then
         case "$2" in
             *bitbucket.org*)
-                local url=$(tinyurl "$2/branch/$3")
+                local url=$(isgd "$2/branch/$3")
                 ;;
             *git.exherbo.org*)
-                local url=$(tinyurl "$2/log/?h=$3")
+                local url=$(isgd "$2/log/?h=$3")
                 ;;
             *gitlab.com*)
-                local url=$(tinyurl $(echo "$2" | sed 's/\.git//;s#/$##')"/commits/$3")
+                local url=$(isgd $(echo "$2" | sed 's/\.git//;s#/$##')"/commits/$3")
                 ;;
             *github.com*)
                 local url=$(gitio $(echo "$2" | sed 's/\.git//;s#/$##')"/commits/$3")
@@ -127,13 +127,13 @@ get_url() { # get_url <type> <remote> <hash/branch name>
     elif [[ "$type" == "tag" ]];then
         case "$2" in
             *bitbucket.org*)
-                local url=$(tinyurl "$2/commits/tag/$3")
+                local url=$(isgd "$2/commits/tag/$3")
                 ;;
             *git.exherbo.org*)
-                local url=$(tinyurl "$2/tag/?id=$3")
+                local url=$(isgd "$2/tag/?id=$3")
                 ;;
             *gitlab.com*)
-                local url=$(tinyurl $(echo "$2" | sed 's/\.git//;s#/$##')"/commits/$3")
+                local url=$(isgd $(echo "$2" | sed 's/\.git//;s#/$##')"/commits/$3")
                 ;;
             *github.com*)
                 local url=$(gitio $(echo "$2" | sed 's/\.git//;s#/$##')"/commits/$3")
