@@ -80,14 +80,14 @@ category() {
 gitio() { # shorten a github url with git.io; gitio <urls>
     local url
     for url in $@;do
-        curl --silent -i https://git.io -F "url=$1" | grep Location: | cut -d' ' -f2-
+        curl --max-time 10 --silent -i https://git.io -F "url=$1" | grep Location: | cut -d' ' -f2-
     done
 }
 
 isgd() { # shorten any url with is.gd; isgd <urls>
     local url
     for url in $@;do
-        curl --silent "https://is.gd/create.php?format=simple&url=$url"
+        curl --max-time 10 --silent "https://is.gd/create.php?format=simple&url=$url"
     done
 }
 
