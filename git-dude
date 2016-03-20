@@ -64,6 +64,9 @@ dudenotify() {
 
 category() {
     case "${1}" in
+        */midipix/*)
+            echo midipix
+        ;;
         */custom/*)
             git -C "${1}" config dude.category 2>/dev/null || echo custom
         ;;
@@ -99,7 +102,7 @@ get_url() { # get_url <type> <remote> <hash/branch name>
             *bitbucket.org*)
                 local url=$(isgd "$2/commits/$3")
                 ;;
-            *git.exherbo.org*)
+            *git.exherbo.org*|*midipix.org*)
                 local url=$(isgd "$2/commit/?id=$3")
                 ;;
             *gitlab.com*)
@@ -114,7 +117,7 @@ get_url() { # get_url <type> <remote> <hash/branch name>
             *bitbucket.org*)
                 local url=$(isgd "$2/branch/$3")
                 ;;
-            *git.exherbo.org*)
+            *git.exherbo.org*|*midipix.org*)
                 local url=$(isgd "$2/log/?h=$3")
                 ;;
             *gitlab.com*)
@@ -129,7 +132,7 @@ get_url() { # get_url <type> <remote> <hash/branch name>
             *bitbucket.org*)
                 local url=$(isgd "$2/commits/tag/$3")
                 ;;
-            *git.exherbo.org*)
+            *git.exherbo.org*|*midipix.org*)
                 local url=$(isgd "$2/tag/?id=$3")
                 ;;
             *gitlab.com*)
