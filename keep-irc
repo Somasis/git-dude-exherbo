@@ -18,7 +18,7 @@ while true; do
     iipid="$!"
     printf 'running ii... %s\n' "$iipid"
     sleep 5
-    printf "/j %s\n" $channels > "${irc_dir}/${network}/in"
     . "$cmds"
+    printf "/j %s\n" $channels > "${irc_dir}/${network}/in"
     wait "$iipid"
 done
