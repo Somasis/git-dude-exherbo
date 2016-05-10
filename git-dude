@@ -96,6 +96,9 @@ isgd() { # shorten any url with is.gd; isgd <urls>
 
 get_url() { # get_url <type> <remote> <hash/branch name>
     type="$1"
+    if [[ $(git -C "${dir}" config dude.url) == 'false' ]];then
+        return 1
+    fi
     [[ "$2" == '/'* ]] && return 0
     if [[ "$type" == "commit" ]];then
         case "$2" in
