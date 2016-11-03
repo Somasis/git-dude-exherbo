@@ -14,11 +14,14 @@ cmds="$irc_dir/cmds"
 ii_args="-e 6697"
 
 while true; do
-    ii -s "$network" -n "$nick" -f "$full_name" -i "$irc_dir" $ii_args &
-    iipid="$!"
-    printf 'running ii... %s\n' "$iipid"
-    sleep 5
-    . "$cmds"
-    printf "/j %s\n" $channels > "${irc_dir}/${network}/in"
-    wait "$iipid"
+    if ! ps "$iipid" >/dev/null 2>&1;then
+        ii -s "$network" -n "$nick" -f "$full_name" -i "$irc_dir" $ii_args &
+        iipid="$!"
+        printf 'running ii... %s\n' "$iipid"
+        sleep 5
+        . "$cmds"
+        printf "/j %s\n" $channels > "${irc_dir}/${network}/in"
+    else
+        sleep 10
+    fi
 done
