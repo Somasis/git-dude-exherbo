@@ -87,10 +87,10 @@ gitio() { # shorten a github url with git.io; gitio <urls>
     done
 }
 
-isgd() { # shorten any url with is.gd; isgd <urls>
+0x0st() { # shorten any url with 0x0.st; 0x0st <urls>
     local url
     for url in $@;do
-        curl --max-time 10 --silent "https://is.gd/create.php?format=simple&url=$url"
+        curl --max-time 10 --silent -F "shorten=${url}" "https://0x0.st"
     done
 }
 
@@ -103,13 +103,13 @@ get_url() { # get_url <type> <remote> <hash/branch name>
     if [[ "$type" == "commit" ]];then
         case "$2" in
             *bitbucket.org*)
-                local url=$(isgd "$2/commits/$3")
+                local url=$(0x0st  "$2/commits/$3")
                 ;;
             *git.exherbo.org*|*midipix.org*)
-                local url=$(isgd "$2/commit/?id=$3")
+                local url=$(0x0st "$2/commit/?id=$3")
                 ;;
             *gitlab.com*)
-                local url=$(isgd $(echo "$2" | sed 's/\.git//;s#/$##')"/commit/$3")
+                local url=$(0x0st $(echo "$2" | sed 's/\.git//;s#/$##')"/commit/$3")
                 ;;
             *github.com*)
                 local url=$(gitio $(echo "$2" | sed 's/\.git//;s#/$##')"/commit/$3")
@@ -118,13 +118,13 @@ get_url() { # get_url <type> <remote> <hash/branch name>
     elif [[ "$type" == "branch" ]];then
         case "$2" in
             *bitbucket.org*)
-                local url=$(isgd "$2/branch/$3")
+                local url=$(0x0st "$2/branch/$3")
                 ;;
             *git.exherbo.org*|*midipix.org*)
-                local url=$(isgd "$2/log/?h=$3")
+                local url=$(0x0st "$2/log/?h=$3")
                 ;;
             *gitlab.com*)
-                local url=$(isgd $(echo "$2" | sed 's/\.git//;s#/$##')"/commits/$3")
+                local url=$(0x0st $(echo "$2" | sed 's/\.git//;s#/$##')"/commits/$3")
                 ;;
             *github.com*)
                 local url=$(gitio $(echo "$2" | sed 's/\.git//;s#/$##')"/commits/$3")
@@ -133,13 +133,13 @@ get_url() { # get_url <type> <remote> <hash/branch name>
     elif [[ "$type" == "tag" ]];then
         case "$2" in
             *bitbucket.org*)
-                local url=$(isgd "$2/commits/tag/$3")
+                local url=$(0x0st "$2/commits/tag/$3")
                 ;;
             *git.exherbo.org*|*midipix.org*)
-                local url=$(isgd "$2/tag/?id=$3")
+                local url=$(0x0st "$2/tag/?id=$3")
                 ;;
             *gitlab.com*)
-                local url=$(isgd $(echo "$2" | sed 's/\.git//;s#/$##')"/commits/$3")
+                local url=$(0x0st $(echo "$2" | sed 's/\.git//;s#/$##')"/commits/$3")
                 ;;
             *github.com*)
                 local url=$(gitio $(echo "$2" | sed 's/\.git//;s#/$##')"/commits/$3")
